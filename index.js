@@ -23,52 +23,35 @@ const client = new MongoClient(uri, { useNewUrlParser: true,  useUnifiedTopology
 client.connect(err => {
   const workCollection = client.db("volunteerTeam").collection("works");
 
-  app.post('/addWork', (req, res) => {
-      const work = req.body;
-      workCollection.insertMany(work)
-      .then(result => {
-          res.send(result.insertedCount)
-      })
+  app.post("/registeredEvent", (req,res) => {
+    const latestEvent = req.body;
+    console.log(latestEvent);
   })
 
-  app.post("/registeredEvent", (req, res) => {
-      const latestEvent = req.body;
-      RegisteredEventCollection.insertOne(latestEvent)
-      .then(result => {
-        res.send(result.insertedCount > 0)
-      })
-
-  })
-
-  app.get('/' , (req, res) => {
-    res.send("ready to Work")
-  })
-
-  app.get('/work', (req, res) => {
-    workCollection.find({})
-    .toArray((err, documents) => {
-        res.send(documents);
-    })
-  })
-
-  app.get('/registeredEvent', (req, res) => {
-    RegisteredEventCollection.find({})
-    .toArray((err, documents) => {
-      res.send(documents);
-    })
-  })
-
-  app.delete('/delete/:id', (req, res) => {
-    console.log(req.params.id)
-    RegisteredEventCollection.deleteOne({_id: ObjectId(req.params.id)})
+  app.post("/addWorks", (req, res) =>{
+    const work = req.body;
+    workCollection.insertMany(work)
     .then(result => {
-      console.log(result);
-      res.send(result.deletedCount > 0);
+      console.log(result.insertedCount);
+      res.send(result.insertedCount)
     })
-})
-     
+  })
+
+
+  app.get('/', (req, res) =>{
+    res.send('ready to use')
+  })
+
+  app.get("/works/:_id", (req, res) =>{
+    workCollection.find({_id: ObjectID(req.params._id)})
+    .toArray((err, documents) => {
+      res.sendDate(documents[0])
+    })
+  })
 
   });
+
+ 
 
 
 app.listen(process.env.PORT || port)
