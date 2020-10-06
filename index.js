@@ -9,8 +9,9 @@ const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bmdyz.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 
-app.use(cors());
+
 app.use(bodyParser.json());
+app.use(cors());
 
 
 
@@ -26,8 +27,8 @@ client.connect(err => {
   console.log('Database connected!');
 
   app.post("/registeredEvent", (req, res) => {
-      const selectedEvent = req.body;
-      console.log(selectedEvent);
+      const latestEvent = req.body;
+      console.log(latestEvent);
   })
 
 
@@ -40,6 +41,11 @@ client.connect(err => {
               res.send(result.insertedCount)
           })
   })
+
+  
+    app.get('/', (req, res) => {
+        res.send('Successfully working')
+    })
 
   app.get("/works", (req, res) => {
       eventCollection.find({})
@@ -59,8 +65,5 @@ client.connect(err => {
 });
 
 
-app.get('/', (req, res) => {
-  res.send('Successfully works!')
-})
 
 app.listen(process.env.PORT || port)
